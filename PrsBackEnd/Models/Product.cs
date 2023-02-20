@@ -22,7 +22,7 @@ namespace PrsBackEnd.Models
         public string Unit { get; set; }
 
         [StringLength(255)]
-        public string PhotoPath { get; set; }
+        public string? PhotoPath { get; set; }
 
         public int VendorID { get; set; }
     }
