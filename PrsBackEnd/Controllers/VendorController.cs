@@ -20,14 +20,14 @@ namespace PrsBackEnd.Controllers
             _context = context;
         }
 
-        // GET: api/Vendor
+        // GET: /vendors
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Vendor>>> GetVendors()
         {
             return await _context.Vendors.ToListAsync();
         }
 
-        // GET: api/Vendor/5
+        // GET: /vendors/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Vendor>> GetVendor(int id)
         {
@@ -41,8 +41,7 @@ namespace PrsBackEnd.Controllers
             return vendor;
         }
 
-        // PUT: api/Vendor/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // PUT: /vendors/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutVendor(int id, Vendor vendor)
         {
@@ -72,8 +71,7 @@ namespace PrsBackEnd.Controllers
             return NoContent();
         }
 
-        // POST: api/Vendor
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // POST: /vendors
         [HttpPost]
         public async Task<ActionResult<Vendor>> PostVendor(Vendor vendor)
         {
@@ -83,7 +81,7 @@ namespace PrsBackEnd.Controllers
             return CreatedAtAction("GetVendor", new { id = vendor.Id }, vendor);
         }
 
-        // DELETE: api/Vendor/5
+        // DELETE: /vendors/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVendor(int id)
         {

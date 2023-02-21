@@ -9,7 +9,7 @@ using PrsBackEnd.Models;
 
 namespace PrsBackEnd.Controllers
 {
-    [Route("api/users")]
+    [Route("users")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -20,14 +20,35 @@ namespace PrsBackEnd.Controllers
             _context = context;
         }
 
-        // GET: api/User
+        // Login JSON Format:
+        //  {
+        //    "username": "string",
+        //    "password": "string"
+        //  {
+
+        [Route("/login")]
+        [HttpPost]
+        public async Task<ActionResult<User>> LoginUser([FromBody] UserPasswordObject upo)
+        {
+            var user = await _context.Users.Where(u => u.Username == upo.username && u.Password == upo.password).FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return NotFound();  // 404
+            }
+
+            return user;  
+        }
+
+
+        // GET: /users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             return await _context.Users.ToListAsync();
         }
 
-        // GET: api/User/5
+        // GET: /users/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
@@ -41,8 +62,7 @@ namespace PrsBackEnd.Controllers
             return user;
         }
 
-        // PUT: api/User/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // PUT: /users/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, User user)
         {
@@ -72,8 +92,7 @@ namespace PrsBackEnd.Controllers
             return NoContent();
         }
 
-        // POST: api/User
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // POST: /users
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
@@ -83,7 +102,7 @@ namespace PrsBackEnd.Controllers
             return CreatedAtAction("GetUser", new { id = user.Id }, user);
         }
 
-        // DELETE: api/User/5
+        // DELETE: /users/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
@@ -104,4 +123,11 @@ namespace PrsBackEnd.Controllers
             return _context.Users.Any(e => e.Id == id);
         }
     }
+
+    public class UserPasswordObject
+    {
+        public string username { get; set; }
+        public string password { get; set; }
+    }
+
 }
