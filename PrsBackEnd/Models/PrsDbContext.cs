@@ -12,6 +12,10 @@ namespace PrsBackEnd.Models
 
         public DbSet<Vendor> Vendors { get; set; }
 
+        public DbSet<Request> Requests { get; set; }
+
+        public DbSet<RequestLine> RequestLines { get; set; }
+
 
         // constructor to support dependency injection
         public PrsDbContext(DbContextOptions<PrsDbContext> options) : base(options)
@@ -20,12 +24,6 @@ namespace PrsBackEnd.Models
         }
 
 
-        // constructor to support dependency injection
-        public DbSet<PrsBackEnd.Models.Request> Request { get; set; }
-
-
-        // constructor to support dependency injection
-        public DbSet<PrsBackEnd.Models.RequestLine> RequestLine { get; set; }
 
     }
 }

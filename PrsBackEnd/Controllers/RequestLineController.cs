@@ -9,7 +9,7 @@ using PrsBackEnd.Models;
 
 namespace PrsBackEnd.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("request-lines")]
     [ApiController]
     public class RequestLineController : ControllerBase
     {
@@ -20,18 +20,18 @@ namespace PrsBackEnd.Controllers
             _context = context;
         }
 
-        // GET: api/RequestLine
+        // GET: request-line
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RequestLine>>> GetRequestLine()
+        public async Task<ActionResult<IEnumerable<RequestLine>>> GetRequestLines()
         {
-            return await _context.RequestLine.ToListAsync();
+            return await _context.RequestLines.ToListAsync();
         }
 
-        // GET: api/RequestLine/5
+        // GET: /request-line/5
         [HttpGet("{id}")]
         public async Task<ActionResult<RequestLine>> GetRequestLine(int id)
         {
-            var requestLine = await _context.RequestLine.FindAsync(id);
+            var requestLine = await _context.RequestLines.FindAsync(id);
 
             if (requestLine == null)
             {
@@ -42,14 +42,9 @@ namespace PrsBackEnd.Controllers
         }
 
         // PUT: api/RequestLine/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutRequestLine(int id, RequestLine requestLine)
+        [HttpPut(]
+        public async Task<IActionResult> PutRequestLine([FromBody] RequestLine requestLine)
         {
-            if (id != requestLine.Id)
-            {
-                return BadRequest();
-            }
 
             _context.Entry(requestLine).State = EntityState.Modified;
 
@@ -59,7 +54,7 @@ namespace PrsBackEnd.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!RequestLineExists(id))
+                if (!RequestLineExists(requestLine.Id))
                 {
                     return NotFound();
                 }
@@ -72,12 +67,11 @@ namespace PrsBackEnd.Controllers
             return NoContent();
         }
 
-        // POST: api/RequestLine
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // POST: /request-line
         [HttpPost]
         public async Task<ActionResult<RequestLine>> PostRequestLine(RequestLine requestLine)
         {
-            _context.RequestLine.Add(requestLine);
+            _context.RequestLines.Add(requestLine);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetRequestLine", new { id = requestLine.Id }, requestLine);
@@ -87,13 +81,13 @@ namespace PrsBackEnd.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRequestLine(int id)
         {
-            var requestLine = await _context.RequestLine.FindAsync(id);
+            var requestLine = await _context.RequestLines.FindAsync(id);
             if (requestLine == null)
             {
                 return NotFound();
             }
 
-            _context.RequestLine.Remove(requestLine);
+            _context.RequestLines.Remove(requestLine);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -101,7 +95,7 @@ namespace PrsBackEnd.Controllers
 
         private bool RequestLineExists(int id)
         {
-            return _context.RequestLine.Any(e => e.Id == id);
+            return _context.RequestLines.Any(e => e.Id == id);
         }
     }
 }

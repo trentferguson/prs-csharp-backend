@@ -1,4 +1,5 @@
 ﻿using Microsoft.Build.Evaluation;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrsBackEnd.Models
 {
@@ -19,14 +20,13 @@ namespace PrsBackEnd.Models
 
         public decimal Total { get; set; }
 
-        public virtual User User { get; set; }
+        [ForeignKey(nameof(UserId))]
+        public User User { get; set; }
 
         public int UserId { get; set; }
 
-        public virtual List<RequestLine> RequestLines { get; set; }
+        public List<RequestLine>? RequestLines { get; set; }
 
-        public Request()
-        {
-        }
+
     }
 }

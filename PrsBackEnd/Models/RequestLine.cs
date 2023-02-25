@@ -16,9 +16,7 @@ namespace PrsBackEnd.Models
 
         public int ProductId { get; set; }
 
-        public int Quantity { get; set; } = 1;
-
-        public RequestLine() { }
+        public int Quantity { get; set; }
 
     }
 }

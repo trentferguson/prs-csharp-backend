@@ -9,7 +9,7 @@ using PrsBackEnd.Models;
 
 namespace PrsBackEnd.Controllers
 {
-    [Route("[controller]")]
+    [Route("requests")]
     [ApiController]
     public class RequestController : ControllerBase
     {
@@ -22,16 +22,20 @@ namespace PrsBackEnd.Controllers
 
         // GET: /Request
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Request>>> GetRequest()
+        public async Task<ActionResult<IEnumerable<Request>>> GetRequests()
         {
-            return await _context.Request.ToListAsync();
+            return await _context.Requests.Include(r => r.User).ToListAsync();
         }
 
         // GET: /Request/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Request>> GetRequest(int id)
         {
-            var request = await _context.Request.FindAsync(id);
+            //var request = await _context.Requests.FindAsync(id);
+
+            var request = await _context.Requests.Where(r => r.Id == id)
+                                                  .Include(r => r.User)
+                                                  .FirstOrDefaultAsync();
 
             if (request == null)
             {
@@ -77,7 +81,7 @@ namespace PrsBackEnd.Controllers
         [HttpPost]
         public async Task<ActionResult<Request>> PostRequest(Request request)
         {
-            _context.Request.Add(request);
+            _context.Requests.Add(request);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetRequest", new { id = request.Id }, request);
@@ -87,13 +91,13 @@ namespace PrsBackEnd.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRequest(int id)
         {
-            var request = await _context.Request.FindAsync(id);
+            var request = await _context.Requests.FindAsync(id);
             if (request == null)
             {
                 return NotFound();
             }
 
-            _context.Request.Remove(request);
+            _context.Requests.Remove(request);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -101,7 +105,63 @@ namespace PrsBackEnd.Controllers
 
         private bool RequestExists(int id)
         {
-            return _context.Request.Any(e => e.Id == id);
+            return _context.Requests.Any(e => e.Id == id);
+        }
+
+        [HttpPut("/approve")]
+        public async Task<IActionResult> ApproveRequest([FromBody] Request request)
+        {
+            var req = await _context.Requests.FindAsync(request.Id);
+
+            if (req == null)
+            {
+                return NotFound();
+            }
+
+            req.Status = "APPROVED";
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpPut("/reject")]
+        public async Task<IActionResult> RejectRequest([FromBody] Request request)
+        {
+            var req = await _context.Requests.FindAsync(request.Id);
+
+            if (req == null)
+            {
+                return NotFound();
+            }
+
+            req.Status = "REJECTED";
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpPut("/review")]
+        public async Task<IActionResult> ReviewRequest([FromBody] Request request)
+        {
+            var req = await _context.Requests.FindAsync(request.Id);
+
+            if (req == null) { return NotFound(); }
+
+            if (req.Total == 0) { throw new Exception("Request not valid"); }
+
+            req.Status = (req.Total <= 50 && req.Total > 0) ? "APPROVED" : "REVIEW";
+
+            return Ok();
+        }
+
+        [HttpGet("{userid}/reviews")]
+        public async Task<ActionResult<IEnumerable<Request>>> GetRequestsForReview(int id)
+        {
+            var req = await _context.Requests.Where(r => r.Status == "REVIEW" && r.UserId != id).ToListAsync();
+
+            return req;
         }
     }
 }

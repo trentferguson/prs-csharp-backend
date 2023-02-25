@@ -26,6 +26,6 @@ namespace PrsBackEnd.Models
 
         public int VendorID { get; set; }
 
-        public virtual Vendor Vendor { get; set; }
+        public Vendor Vendor { get; set; }
     }
 }

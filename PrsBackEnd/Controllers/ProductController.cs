@@ -41,14 +41,10 @@ namespace PrsBackEnd.Controllers
             return product;
         }
 
-        // PUT: /products/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(int id, Product product)
+        //update product
+        [HttpPut]
+        public async Task<IActionResult> PutProduct([FromBody] Product product)
         {
-            if (id != product.Id)
-            {
-                return BadRequest();
-            }
 
             _context.Entry(product).State = EntityState.Modified;
 
@@ -58,7 +54,7 @@ namespace PrsBackEnd.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProductExists(id))
+                if (!ProductExists(product.Id))
                 {
                     return NotFound();
                 }
@@ -73,7 +69,7 @@ namespace PrsBackEnd.Controllers
 
         // POST: /products
         [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct(Product product)
+        public async Task<ActionResult<Product>> PostProduct([FromBody] Product product)
         {
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
