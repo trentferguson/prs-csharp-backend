@@ -25,5 +25,7 @@ namespace PrsBackEnd.Models
         public string? PhotoPath { get; set; }
 
         public int VendorID { get; set; }
+
+        public virtual Vendor Vendor { get; set; }
     }
 }
