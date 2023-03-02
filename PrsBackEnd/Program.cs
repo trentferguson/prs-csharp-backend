@@ -1,11 +1,22 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using PrsBackEnd.Models;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+
+
+builder.Services.AddControllers()
+                .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles)
+                .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
+                       
+               
+
 
 builder.Services.AddDbContext<PrsDbContext>(
 

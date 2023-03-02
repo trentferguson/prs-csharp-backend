@@ -20,18 +20,22 @@ namespace PrsBackEnd.Controllers
             _context = context;
         }
 
-        // GET: request-line
+        // get all (/request-lines)
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RequestLine>>> GetRequestLines()
         {
-            return await _context.RequestLines.ToListAsync();
+            return await _context.RequestLines
+                                             .Include(r => r.Request).ThenInclude(request => request.User)
+                                             .Include(r => r.Product).ThenInclude(product => product.Vendor)
+                                             .ToListAsync();
         }
 
-        // GET: /request-line/5
+        // get by ID /request-line/5
         [HttpGet("{id}")]
         public async Task<ActionResult<RequestLine>> GetRequestLine(int id)
         {
             var requestLine = await _context.RequestLines.FindAsync(id);
+
 
             if (requestLine == null)
             {
@@ -42,7 +46,7 @@ namespace PrsBackEnd.Controllers
         }
 
         // PUT: api/RequestLine/5
-        [HttpPut(]
+        [HttpPut]
         public async Task<IActionResult> PutRequestLine([FromBody] RequestLine requestLine)
         {
 
@@ -69,7 +73,7 @@ namespace PrsBackEnd.Controllers
 
         // POST: /request-line
         [HttpPost]
-        public async Task<ActionResult<RequestLine>> PostRequestLine(RequestLine requestLine)
+        public async Task<ActionResult<RequestLine>> PostRequestLine([FromBody] RequestLine requestLine)
         {
             _context.RequestLines.Add(requestLine);
             await _context.SaveChangesAsync();
@@ -77,7 +81,7 @@ namespace PrsBackEnd.Controllers
             return CreatedAtAction("GetRequestLine", new { id = requestLine.Id }, requestLine);
         }
 
-        // DELETE: api/RequestLine/5
+        // DELETE: /request-line/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRequestLine(int id)
         {
@@ -96,6 +100,14 @@ namespace PrsBackEnd.Controllers
         private bool RequestLineExists(int id)
         {
             return _context.RequestLines.Any(e => e.Id == id);
+        }
+
+        void RecalcRequestTotal(int requestId)
+        {
+            //get the total
+            //find the request
+            //update the request
+            //SaveChanges();
         }
     }
 }

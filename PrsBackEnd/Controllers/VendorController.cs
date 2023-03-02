@@ -41,32 +41,15 @@ namespace PrsBackEnd.Controllers
             return vendor;
         }
 
-        // PUT: /vendors/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutVendor(int id, Vendor vendor)
+        // PUT: /vendors
+        [HttpPut]
+        public async Task<IActionResult> PutVendor([FromBody] Vendor vendor)
         {
-            if (id != vendor.Id)
-            {
-                return BadRequest();
-            }
+            // check if vendor exists
 
             _context.Entry(vendor).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!VendorExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
