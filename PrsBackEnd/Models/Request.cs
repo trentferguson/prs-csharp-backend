@@ -11,16 +11,26 @@ namespace PrsBackEnd.Models
         [Key]
         public int Id { get; set; }
 
+        [StringLength(80)]
         public string Description { get; set; }
 
+        [StringLength(80)]
         public string Justification { get; set; }
 
+        [StringLength(80)]
         public string RejectionReason { get; set; }
 
+        [Required, StringLength(20)]
         public string DeliveryMode { get; set; }
 
-        public string Status { get; set; }
+        public DateTime SubmittedDate { get; set; } = DateTime.Now;
 
+        public DateTime DateNeeded { get; set; }
+
+        [Required, StringLength(10)]
+        public string Status { get; set; } = "NEW";
+
+        [Column(TypeName = "decimal(11,2)")]
         public decimal Total { get; set; }
 
         [ForeignKey(nameof(UserId))]

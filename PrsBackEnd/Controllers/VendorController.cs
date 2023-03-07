@@ -9,7 +9,7 @@ using PrsBackEnd.Models;
 
 namespace PrsBackEnd.Controllers
 {
-    [Route("vendors")]
+    [Route("/vendors")]
     [ApiController]
     public class VendorController : ControllerBase
     {
@@ -20,14 +20,14 @@ namespace PrsBackEnd.Controllers
             _context = context;
         }
 
-        // GET: /vendors
+        // get all vendors
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Vendor>>> GetVendors()
         {
             return await _context.Vendors.ToListAsync();
         }
 
-        // GET: /vendors/5
+        // get vendor by Id
         [HttpGet("{id}")]
         public async Task<ActionResult<Vendor>> GetVendor(int id)
         {
@@ -41,7 +41,7 @@ namespace PrsBackEnd.Controllers
             return vendor;
         }
 
-        // PUT: /vendors
+        // update vendor
         [HttpPut]
         public async Task<IActionResult> PutVendor([FromBody] Vendor vendor)
         {
@@ -56,7 +56,7 @@ namespace PrsBackEnd.Controllers
 
         // POST: /vendors
         [HttpPost]
-        public async Task<ActionResult<Vendor>> PostVendor(Vendor vendor)
+        public async Task<ActionResult<Vendor>> PostVendor([FromBody] Vendor vendor)
         {
             _context.Vendors.Add(vendor);
             await _context.SaveChangesAsync();

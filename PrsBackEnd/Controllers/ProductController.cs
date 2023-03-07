@@ -9,7 +9,7 @@ using PrsBackEnd.Models;
 
 namespace PrsBackEnd.Controllers
 {
-    [Route("products")]
+    [Route("/products")]
     [ApiController]
     public class ProductController : ControllerBase
     {
@@ -20,18 +20,18 @@ namespace PrsBackEnd.Controllers
             _context = context;
         }
 
-        // GET: /products
+        // get all products
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
             return await _context.Products.Include(p => p.Vendor).ToListAsync();
         }
 
-        // GET: /products/5
+        // get product by Id
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products.Include(p => p.Vendor).FirstOrDefaultAsync();
 
             if (product == null)
             {
@@ -41,7 +41,7 @@ namespace PrsBackEnd.Controllers
             return product;
         }
 
-        //update product
+        //update product by Id
         [HttpPut]
         public async Task<IActionResult> PutProduct([FromBody] Product product)
         {
@@ -67,7 +67,7 @@ namespace PrsBackEnd.Controllers
             return NoContent();
         }
 
-        // POST: /products
+        // create new product
         [HttpPost]
         public async Task<ActionResult<Product>> PostProduct([FromBody] Product product)
         {
@@ -77,7 +77,7 @@ namespace PrsBackEnd.Controllers
             return CreatedAtAction("GetProduct", new { id = product.Id }, product);
         }
 
-        // DELETE: /products/5
+        // delete product by Id
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {

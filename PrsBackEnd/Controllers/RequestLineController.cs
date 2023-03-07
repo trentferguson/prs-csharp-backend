@@ -20,7 +20,7 @@ namespace PrsBackEnd.Controllers
             _context = context;
         }
 
-        // get all (/request-lines)
+        // get all requestlines
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RequestLine>>> GetRequestLines()
         {
@@ -30,7 +30,7 @@ namespace PrsBackEnd.Controllers
                                              .ToListAsync();
         }
 
-        // get by ID /request-line/5
+        // get requestline by Id
         [HttpGet("{id}")]
         public async Task<ActionResult<RequestLine>> GetRequestLine(int id)
         {
@@ -45,7 +45,7 @@ namespace PrsBackEnd.Controllers
             return requestLine;
         }
 
-        // PUT: api/RequestLine/5
+        // update requestline
         [HttpPut]
         public async Task<IActionResult> PutRequestLine([FromBody] RequestLine requestLine)
         {
@@ -55,6 +55,7 @@ namespace PrsBackEnd.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                await Recalculate(requestLine.RequestId);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -71,17 +72,18 @@ namespace PrsBackEnd.Controllers
             return NoContent();
         }
 
-        // POST: /request-line
+        // create new requestline
         [HttpPost]
-        public async Task<ActionResult<RequestLine>> PostRequestLine([FromBody] RequestLine requestLine)
+        public async Task<ActionResult<RequestLine>> Create([FromBody] RequestLine requestLine)
         {
             _context.RequestLines.Add(requestLine);
             await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetRequestLine", new { id = requestLine.Id }, requestLine);
+            await Recalculate(requestLine.RequestId);
+            
+            return CreatedAtAction("GetRequestLineById", new { id = requestLine.Id }, requestLine);
         }
 
-        // DELETE: /request-line/5
+        // delete requestline by Id
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRequestLine(int id)
         {
@@ -94,6 +96,8 @@ namespace PrsBackEnd.Controllers
             _context.RequestLines.Remove(requestLine);
             await _context.SaveChangesAsync();
 
+            await Recalculate(requestLine.RequestId);
+
             return NoContent();
         }
 
@@ -102,12 +106,24 @@ namespace PrsBackEnd.Controllers
             return _context.RequestLines.Any(e => e.Id == id);
         }
 
-        void RecalcRequestTotal(int requestId)
+        // recalculate the requestline total
+        private async Task Recalculate(int requestId)
         {
-            //get the total
-            //find the request
-            //update the request
-            //SaveChanges();
+
+            var total = await _context.RequestLines
+                                        .Where(req => req.RequestId == requestId)
+                                        .Include(req => req.Product)
+                                        .Select(req => new { linetotal = req.Quantity * req.Product.Price })
+                                        .SumAsync(t => t.linetotal);
+
+            var request = await _context.Requests.FindAsync(requestId);
+
+            request.Total = total;
+
+            await _context.SaveChangesAsync();
+
+            throw new NotImplementedException();
+
         }
     }
 }
