@@ -11,17 +11,17 @@ namespace PrsBackEnd.Models
         [Key]
         public int Id { get; set; }
 
+        [JsonIgnore]
         public int RequestId { get; set; }
 
+        [JsonIgnore]
         public int ProductId { get; set; }
 
         public int Quantity { get; set; }
 
-        [JsonIgnore]
         [ForeignKey(nameof(RequestId))]
         public Request? Request { get; set; }
 
-        [JsonIgnore]
         [ForeignKey(nameof(ProductId))]
         public Product? Product { get; set; }
 

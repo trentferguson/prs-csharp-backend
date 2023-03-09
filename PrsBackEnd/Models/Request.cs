@@ -36,6 +36,7 @@ namespace PrsBackEnd.Models
         [ForeignKey(nameof(UserId))]
         public User? User { get; set; }
 
+        [JsonIgnore]
         public int UserId { get; set; }
 
         [JsonIgnore]

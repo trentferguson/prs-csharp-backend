@@ -71,7 +71,7 @@ namespace PrsBackEnd.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(request);
         }
 
         // POST: /Request
@@ -177,7 +177,7 @@ namespace PrsBackEnd.Controllers
         [HttpGet("{userid}/reviews")]
         public async Task<ActionResult<IEnumerable<Request>>> GetRequestsForReview(int id)
         {
-            var req = await _context.Requests.Where(r => r.Status == "REVIEW" && r.UserId != id).ToListAsync();
+            var req = await _context.Requests.Where(r => r.Status == "REVIEW" && r.UserId != id && (r.User.IsAdmin && r.User.IsReviewer)).ToListAsync();
 
             return req;
         }
