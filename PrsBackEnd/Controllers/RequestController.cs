@@ -20,7 +20,7 @@ namespace PrsBackEnd.Controllers
             _context = context;
         }
 
-        // Gget all requests
+        // Get all requests
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Request>>> GetRequests()
         {
@@ -174,7 +174,7 @@ namespace PrsBackEnd.Controllers
             return request;
         }
 
-        [HttpGet("{userid}/reviews")]
+        [HttpGet("/requests/list-review/{id}")]
         public async Task<ActionResult<IEnumerable<Request>>> GetRequestsForReview(int id)
         {
             var req = await _context.Requests.Where(r => r.Status == "REVIEW" && r.UserId != id && (r.User.IsAdmin && r.User.IsReviewer)).ToListAsync();
